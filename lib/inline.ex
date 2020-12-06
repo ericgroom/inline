@@ -20,23 +20,9 @@ defmodule Inline do
     end
   end
 
-  defmacro inline(module) do
-    quote bind_quoted: [module: module] do
-      for inline_test <- Inline.Helpers.extract_tests(module) do
-        env_mod = __ENV__.module
-        hack = Map.put(inline_test, :module, env_mod)
-        test = ExUnit.Case.register_test(hack, :inline, "#{inline_test.name}", [])
-        def unquote(test)(_) do
-          {actual, expected} = apply(unquote(inline_test.module), unquote(inline_test.name), [])
-          assert actual == expected
-        end
-      end
-    end
-  end
-
-  defmacro inline_all(application) do
-    quote bind_quoted: [application: application] do
-      for inline_test <- Inline.Helpers.extract_tests_app(application) do
+  defmacro inline(context) do
+    quote bind_quoted: [context: context] do
+      for inline_test <- Inline.Helpers.extract_tests(context) do
         env_mod = __ENV__.module
         hack = Map.put(inline_test, :module, env_mod)
         test = ExUnit.Case.register_test(hack, :inline, "#{inline_test.name}", [])
