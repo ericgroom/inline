@@ -3,7 +3,7 @@ defmodule Inline do
   Documentation for `Inline`.
   """
 
-  defmacro test(clause, [do: expr]) do
+  defmacro test(actual, [do: expected]) do
     if Mix.env() == :test do
       %{module: module, file: file, line: line} = __CALLER__
       name = :"__inline__test__#{line}"
@@ -14,7 +14,7 @@ defmodule Inline do
         end
         @inline_test_meta unquote(meta)
         def unquote(name)() do
-          {unquote(clause), unquote(expr)}
+          {unquote(actual), unquote(expected)}
         end
       end
     end
