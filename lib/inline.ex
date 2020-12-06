@@ -28,9 +28,10 @@ defmodule Inline do
   defmacro inline(context) do
     quote bind_quoted: [context: context] do
       for inline_test <- Inline.Helpers.extract_tests(context) do
-        env_mod = __ENV__.module
-        hack = Map.put(inline_test, :module, env_mod)
-        test = ExUnit.Case.register_test(hack, :inline, "#{inline_test.name}", [])
+        # in order for ExUnit to work, the module passed here need to be one that uses ExUnit.Case
+        # however all of the other info should be from the context of the test definition
+        exunit_test = Map.put(inline_test, :module, __ENV__.module)
+        test = ExUnit.Case.register_test(exunit_test, :inline, "#{inline_test.name}", [])
         def unquote(test)(_) do
           {actual, expected} = apply(unquote(inline_test.module), unquote(inline_test.name), [])
           assert actual == expected
