@@ -5,9 +5,7 @@ defmodule Inline do
 
   defmacro test(actual, [do: expected]) do
     if Mix.env() == :test do
-      %{module: module, file: file, line: line} = __CALLER__
-      name = :"__inline__test__#{line}"
-      meta = %{module: module, file: file, line: line, name: name} |> Macro.escape()
+      {name, meta} = create_meta_info(__CALLER__)
       quote do
         if not Module.has_attribute?(__MODULE__, :inline_test_meta) do
           Module.register_attribute(__MODULE__, :inline_test_meta, accumulate: true, persist: true)
@@ -18,6 +16,13 @@ defmodule Inline do
         end
       end
     end
+  end
+
+  defp create_meta_info(caller) do
+    %{module: module, file: file, line: line} = caller
+    name = :"__inline__test__#{line}"
+    meta = %{module: module, file: file, line: line, name: name} |> Macro.escape()
+    {name, meta}
   end
 
   defmacro inline(context) do
