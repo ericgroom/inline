@@ -22,7 +22,7 @@ defmodule Inline do
 
   defmacro inline(module) do
     quote bind_quoted: [module: module] do
-      for inline_test <- Inline.extract_tests(module) do
+      for inline_test <- Inline.Helpers.extract_tests(module) do
         env_mod = __ENV__.module
         hack = Map.put(inline_test, :module, env_mod)
         test = ExUnit.Case.register_test(hack, :inline, "#{inline_test.name}", [])
@@ -36,7 +36,7 @@ defmodule Inline do
 
   defmacro inline_all(application) do
     quote bind_quoted: [application: application] do
-      for inline_test <- Inline.extract_tests_app(application) do
+      for inline_test <- Inline.Helpers.extract_tests_app(application) do
         env_mod = __ENV__.module
         hack = Map.put(inline_test, :module, env_mod)
         test = ExUnit.Case.register_test(hack, :inline, "#{inline_test.name}", [])
@@ -46,19 +46,5 @@ defmodule Inline do
         end
       end
     end
-  end
-
-  def extract_tests_app(application) do
-    {:ok, modules} = :application.get_key(application, :modules)
-
-    modules
-    |> Enum.map(&extract_tests/1)
-    |> List.flatten()
-  end
-
-  def extract_tests(module) do
-    module.module_info(:attributes)
-    |> Keyword.get_values(:inline_test_meta)
-    |> List.flatten()
   end
 end
