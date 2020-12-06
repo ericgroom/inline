@@ -34,7 +34,7 @@ defmodule Inline do
       defmodule Foo do
         import Inline
 
-        test add(1, 2), do: 3
+        test add(1, 2), is: 3
         def add(a, b), do: a + b
       end
 
@@ -44,11 +44,11 @@ defmodule Inline do
         import Inline
 
         # It looks nice when you match function syntax, but any expression can be used for either side
-        test 3, do: 3
+        test 3, is: 3
       end
   """
   defmacro test(actual, expected)
-  defmacro test(actual, [do: expected]) do
+  defmacro test(actual, [is: expected]) do
     if testing?() do
       {name, meta} = create_meta_info(__CALLER__)
       quoted_assertion_test(actual, expected, name, meta)
@@ -128,7 +128,7 @@ defmodule Inline do
       defmodule Foo
         import Inline
 
-        test four(), do: 4
+        test four(), is: 4
         def four(), do: 4
       end
 
@@ -149,7 +149,7 @@ defmodule Inline do
       defmodule MyProject.Foo
         import Inline
 
-        test four(), do: 4
+        test four(), is: 4
         def four(), do: 4
       end
 
@@ -157,7 +157,7 @@ defmodule Inline do
       defmodule MyProject.Bar
         import Inline
 
-        test five(), do: 5
+        test five(), is: 5
         def five(), do: 5
       end
 
