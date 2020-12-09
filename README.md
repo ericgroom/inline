@@ -63,4 +63,4 @@ end
 
 You should then be able to run `mix test`!
 
-Additional usage information can be found from the [docs[(https://hexdocs.pm/inline/Inline.html).
+Additional usage information can be found from the [docs](https://hexdocs.pm/inline/Inline.html).
