@@ -7,7 +7,7 @@ defmodule Inline.Helpers do
     |> List.flatten()
   end
 
-  def extract_tests([application: application]) do
+  def extract_tests(application: application) do
     {:ok, modules} = :application.get_key(application, :modules)
 
     modules
